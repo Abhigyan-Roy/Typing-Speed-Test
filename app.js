@@ -4,9 +4,8 @@ const socketio = require('socket.io');
 const mongoose = require('mongoose');
 const expressServer = app.listen(3001);
 const io = socketio(expressServer);
-
 const Game = require('./Models/Game');
-const QuotableAPI = require('./QuotableAPI');
+const QuotableAPI = require('./EasyData');
 
 mongoose.connect('mongodb://localhost:27017/typeracerTutorial',
     { useNewUrlParser: true, useUnifiedTopology: true },
@@ -116,10 +115,10 @@ io.on('connect', (socket) => {
         }
     });
 
-    socket.on('create-game', async (nickName) => {
+    socket.on('create-game', async ({ nickName, difficulty }) => {
         try {
             // get words that our users have to type out
-            const quotableData = await QuotableAPI();
+            const quotableData = await QuotableAPI(difficulty);
             // create game
             let game = new Game();
             // set words
