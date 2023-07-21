@@ -14,7 +14,7 @@ let CurGameHard = null;
 
 app.use(cors());
 app.use('/', router);
-mongoose.connect('mongodb://localhost:27017/typeracerTutorial',
+mongoose.connect('mongodb+srv://admin-tanmay:8101159941@cluster0.zns8b.mongodb.net/typeDB',
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => { console.log('successfully connected to database') });
 router.get('/game-played', async (req, res) => {
@@ -67,7 +67,7 @@ io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
         try {
-            console.log(userInput);
+            // console.log(userInput);
             // find the game
             let game = await Game.findById(gameID);
             // if game has started and game isn't over

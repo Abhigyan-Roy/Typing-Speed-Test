@@ -35,7 +35,7 @@ const Form = ({ isOpen, isOver, gameID }) => {
     };
     return (
         <>
-            <form className="my-5">
+            <form className="my-4">
                 <input
                     type="text"
                     readOnly={isOpen || isOver || isDisabled} // Disable the input when the form is disabled
@@ -46,7 +46,7 @@ const Form = ({ isOpen, isOver, gameID }) => {
                 />
             </form>
             {!isOpen && !isOver && (
-                <button onClick={handleQuitGame} className="bg-red-500 text-white px-4 py-2 rounded-md mt-2">
+                <button onClick={handleQuitGame} className="bg-red-500 text-white px-4 py-2 rounded-md my-3">
                     Quit
                 </button>
             )}

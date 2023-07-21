@@ -29,7 +29,7 @@ const Header = () => {
 
     const themeIcon = theme === "dark" ? faSun : faMoon;
     return (
-        <header className="bg-blue-900 p-5 text-white dark:bg-gray-600">
+        <header className="bg-blue-900 p-2 text-white dark:bg-gray-600">
             <nav className="flex flex-row items-center justify-between p-2">
                 <Link className=" active:text-white hover:text-white hover:no-underline" to="/"><h1 className="text-2xl font-bold">Typing App</h1></Link>
                 <button onClick={handleThemeSwitch}>
