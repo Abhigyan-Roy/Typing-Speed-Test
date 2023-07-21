@@ -14,7 +14,7 @@ let CurGameHard = null;
 
 app.use(cors());
 app.use('/', router);
-mongoose.connect('mongodb+srv://admin-tanmay:8101159941@cluster0.zns8b.mongodb.net/typeDB',
+mongoose.connect('mongodb://localhost:27017/typeracerTutorial',
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => { console.log('successfully connected to database') });
 router.get('/game-played', async (req, res) => {
