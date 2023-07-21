@@ -163,16 +163,9 @@ io.on('connect', (socket) => {
             if (!game.isOver) {
                 // Get the player who wants to quit the game
                 let player = game.players.find(player => player.socketID === socket.id);
-
                 player.WPM = 0;
-
-                game.isOver = true;
-                game.isOpen = false;
-                // save game
                 game = await game.save();
-                // stops timer for that player
                 socket.emit('done');
-                // send updated game to all sockets within game
                 io.to(gameID).emit('updateGame', game);
             }
         } catch (err) {

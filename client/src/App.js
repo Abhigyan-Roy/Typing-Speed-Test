@@ -14,21 +14,18 @@ import TypeRacer from "./components/TypeRacer";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Compete from "./components/Compete.js";
-import styles from "./index.css"
+import styles from "./index.css";
+const initial={
+  _id: "",
+  isOpen: false,
+  players: [],
+  words: [],
+};
 // import OpenGame from "./components/Compete";
 function App() {
-  const [gameState, setGameState] = useState({
-    _id: "",
-    isOpen: false,
-    players: [],
-    words: [],
-  });
+  const [gameState, setGameState] = useState(initial);
+  const [gameIsQuit, setGameIsQuit] = useState(false);
   const navigate = useNavigate();
-
-
-    
-
-
   useEffect(() => {
     socket.on("updateGame", (game) => {
       console.log(game);
@@ -37,7 +34,7 @@ function App() {
     
 
     return () => {
-      socket.removeAllListeners();
+      socket.off("updateGame");
     };
   }, []);
 
@@ -45,6 +42,10 @@ function App() {
     if (gameState._id !== "") navigate(`/game/${gameState._id}`);
   }, [gameState._id, navigate]);
 
+  const handleGameQuit = () => {
+    setGameState(initial);
+    setGameIsQuit(true);
+  };
   return (
     <>
       <Header></Header>
@@ -54,10 +55,9 @@ function App() {
           <Route path="/game/create" element={<CreateGame />} />
           <Route path="/game/compete" element={<Compete />} />
           <Route path="/game/join" element={<JoinGame />} />
-          {/* <Route path="/game/open" element={<OpenGame />} /> */}
           <Route
             path="/game/:gameID"
-            element={<TypeRacer gameState={gameState} />}
+            element={<TypeRacer gameState={gameState} onQuitGame={handleGameQuit}/>}
           />
           
         </Routes>
