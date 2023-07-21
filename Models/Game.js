@@ -5,6 +5,10 @@ const PlayerSchema = new mongoose.Schema({
         type: Number,
         default : 0
     },
+    currentLetterIndex : {
+        type: Number,
+        default : 0
+    },
     socketID : {type : String},
     isPartyLeader : {type : Boolean,default : false},
     WPM : {type : Number, default: -1},

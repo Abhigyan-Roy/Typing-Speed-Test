@@ -63,6 +63,7 @@ io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
         try {
+            console.log(userInput);
             // find the game
             let game = await Game.findById(gameID);
             // if game has started and game isn't over
@@ -70,12 +71,20 @@ io.on('connect', (socket) => {
                 // get player making the request
                 let player = game.players.find(player => player.socketID === socket.id);
                 // get current word the user has to type
-                let word = game.words[player.currentWordIndex];
+                let currentWord = game.words[player.currentWordIndex];
+                let currentLetter = currentWord[player.currentLetterIndex];
                 // if player typed word correctly
-                if (word === userInput) {
-                    // advance player to next word
-                    player.currentWordIndex++;
+                if (currentLetter === userInput) {
+                    // Advance the player to the next letter
+                    player.currentLetterIndex++;
                     // if user hasn't finished typing the sentence
+                    if (player.currentLetterIndex === currentWord.length) {
+                        // Reset the currentLetterIndex for the next word
+                        player.currentLetterIndex = 0;
+    
+                        // Advance the player to the next word
+                        player.currentWordIndex++;
+                    }
                     if (player.currentWordIndex !== game.words.length) {
                         // save the game
                         game = await game.save();

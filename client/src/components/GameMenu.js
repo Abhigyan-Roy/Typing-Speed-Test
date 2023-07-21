@@ -28,8 +28,8 @@ const GameMenu = () => {
     };
     return (
        
-            <div className="grid rounded-lg shadow-2xl p-10 w-full flex-row">
-                <h1 className="text-blue-800 text-4xl">Test Your Typing Speed</h1>
+            <div className="grid rounded-lg shadow-2xl p-10 w-full flex-row justify-center items-center">
+                <h1 className="text-blue-800 text-4xl justify-center items-center">Test Your Typing Speed</h1>
                 <div className="flex m-10 justify-between">
                     <button
                         type="button"

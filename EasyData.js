@@ -25,6 +25,6 @@ function getSelectedArray(difficulty) {
 module.exports = getData = (difficulty) => {
   const selectedArray = getSelectedArray(difficulty);
   const rndInt = randomIntFromInterval(1, selectedArray.length);
-  return selectedArray[rndInt - 1].split(" ");
+  return selectedArray[rndInt - 1].split(' ');
 };
 

@@ -17,14 +17,16 @@ const Form = ({ isOpen, isOver, gameID }) => {
     const resetForm = () => {
         setUserInput("");
     };
-    const onChange = (e) => {
-        let value = e.target.value;
-        let lastChar = value.charAt(value.length - 1);
-        if (lastChar === " ") {
-            socket.emit("userInput", { userInput, gameID });
-            resetForm();
-        } else setUserInput(e.target.value);
+    const handleKeyDown = (e) => {
+        const letter = e.key;
+        
+        // Send the letter to the server
+        socket.emit("userInput", { userInput: letter, gameID });
+        
+        // Reset the form
+        setUserInput("");
     };
+
     
     const handleQuitGame = () => {
         // Disable the form when the user quits the game
@@ -37,7 +39,7 @@ const Form = ({ isOpen, isOver, gameID }) => {
                 <input
                     type="text"
                     readOnly={isOpen || isOver || isDisabled} // Disable the input when the form is disabled
-                    onChange={onChange}
+                    onKeyDown={handleKeyDown}
                     value={userInput}
                     className={`shadow appearance-none border rounded w-1/2 my-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${isDisabled ? "bg-gray-300" : ""}`} // Add a different background color to indicate it's disabled
                     ref={textInput}
