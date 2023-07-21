@@ -8,6 +8,10 @@ const Game = require('./Models/Game');
 const QuotableAPI = require('./EasyData');
 const router = express.Router();
 const cors = require('cors');
+let CurGameEasy = null;
+let CurGameMedium = null;
+let CurGameHard = null;
+
 app.use(cors());
 app.use('/', router);
 mongoose.connect('mongodb://localhost:27017/typeracerTutorial',
@@ -63,6 +67,7 @@ io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
         try {
+            console.log(userInput);
             // find the game
             let game = await Game.findById(gameID);
             // if game has started and game isn't over
@@ -80,7 +85,7 @@ io.on('connect', (socket) => {
                     if (player.currentLetterIndex === currentWord.length) {
                         // Reset the currentLetterIndex for the next word
                         player.currentLetterIndex = 0;
-    
+
                         // Advance the player to the next word
                         player.currentWordIndex++;
                     }
@@ -234,6 +239,254 @@ io.on('connect', (socket) => {
             // send updated game to all sockets within game
             io.to(gameID).emit('updateGame', game);
         } catch (err) {
+            console.log(err);
+        }
+    });
+    socket.on('join-open-game', async ({ nickName,difficulty }) => {
+        try {
+            console.log(nickName,CurGameEasy,CurGameMedium,CurGameHard);
+            // get open game
+            if (difficulty === "easy") {
+                if (CurGameEasy === null) {
+                    // create a new game 
+                    CurGameEasy = new Game();
+                    // get words that our users have to type out
+                    const quotableData = await QuotableAPI(difficulty);
+                    // set words
+                    CurGameEasy.words = quotableData;
+                    // create player
+                    let player = {
+                        socketID: socket.id,
+
+                        nickName
+                    }
+                    // add player
+                    CurGameEasy.players.push(player);
+                    // save the game
+                    CurGameEasy = await CurGameEasy.save();
+                    // make players socket join the game room
+                    const gameID = CurGameEasy._id.toString();
+                    socket.join(gameID);
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameEasy);
+                    // if game hasnot started after 10 seconds, start the game
+                    refgame = CurGameEasy;
+                    setTimeout(async () => {
+                        // get game
+                        let game = await Game.findById(gameID);
+                        // check if game is allowing users to join
+                        if (game.isOpen) {
+                            // close game so no one else can join
+                            game.isOpen = false;
+                            // save the game
+                            game = await game.save();
+                            // send updated game to all sockets within game
+                            io.to(gameID).emit('updateGame', game);
+                            // start game clock
+                            startGameClock(gameID);
+                            CurGameEasy = null;
+                        }
+                    }, 60000);
+                    
+
+
+
+
+                }
+                else {
+                    // make players socket join the game room
+                    const gameID = CurGameEasy._id.toString();
+                    socket.join(gameID);
+                    // create our player
+                    let player = {
+                        socketID: socket.id,
+                        nickName
+                    }
+                    // add player to the game
+                    CurGameEasy.players.push(player);
+                    // save the game
+                    CurGameEasy = await CurGameEasy.save();
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameEasy);
+                    // if games player count is 2 start the game
+                    if (CurGameEasy.players.length === 2) {
+                        // close game so no one else can join
+                        CurGameEasy.isOpen = false;
+                        // save the game
+                        CurGameEasy = await CurGameEasy.save();
+                        // send updated game to all sockets within game
+                        io.to(gameID).emit('updateGame', CurGameEasy);
+                        // start game clock
+                        startGameClock(gameID);
+                        if (CurGameEasy === refgame) {
+                            CurGameEasy = null;
+                        }
+
+
+                    }
+
+                }
+
+
+
+            }
+            else if (difficulty === "medium") {
+                if (CurGameMedium === null) {
+                    CurGameMedium = new Game();
+                    // get words that our users have to type out
+                    const quotableData = await QuotableAPI(difficulty);
+                    // set words
+                    CurGameMedium.words = quotableData;
+                    // create player
+                    let player = {
+                        socketID: socket.id,
+
+                        nickName
+                    }
+                    // add player
+                    CurGameMedium.players.push(player);
+                    // save the game
+                    CurGameMedium = await CurGameMedium.save();
+                    // make players socket join the game room
+                    const gameID = CurGameMedium._id.toString();
+                    socket.join(gameID);
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameMedium);
+                    refgame = CurGameMedium;
+                    setTimeout(async () => {
+                        // get game
+                        let game = await Game.findById(gameID);
+                        // check if game is allowing users to join
+                        if (game.isOpen) {
+                            // close game so no one else can join
+                            game.isOpen = false;
+                            // save the game
+                            game = await game.save();
+                            // send updated game to all sockets within game
+                            io.to(gameID).emit('updateGame', game);
+                            // start game clock
+                            startGameClock(gameID);
+                            if (CurGameMedium === refgame) {
+                                CurGameMedium = null;
+                            }
+                        }
+                    }, 60000);
+                    
+
+
+                    
+                }
+                else {
+                    // make players socket join the game room
+                    const gameID = CurGameMedium._id.toString();
+                    socket.join(gameID);
+                    // create our player
+
+                    let player = {
+                        socketID: socket.id,
+                        nickName
+                    }
+                    // add player to the game
+                    CurGameMedium.players.push(player);
+                    // save the game
+                    CurGameMedium = await CurGameMedium.save();
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameMedium);
+                    // if games player count is 2 start the game
+                    if (CurGameMedium.players.length === 2) {
+                        // close game so no one else can join
+                        CurGameMedium.isOpen = false;
+                        // save the game
+                        CurGameMedium = await CurGameMedium.save();
+                        // send updated game to all sockets within game
+                        io.to(gameID).emit('updateGame', CurGameMedium);
+                        // start game clock
+                        startGameClock(gameID);
+                        CurGameMedium = null;
+                    }
+
+
+                }
+            }
+            else if (difficulty === "hard") {
+                if (CurGameHard === null) {
+                    CurGameHard = new Game();
+                    // get words that our users have to type out
+                    const quotableData = await QuotableAPI(difficulty);
+                    // set words
+                    CurGameHard.words = quotableData;
+                    // create player
+                    let player = {
+                        socketID: socket.id,
+
+                        nickName
+                    }
+                    // add player
+                    CurGameHard.players.push(player);
+                    // save the game
+                    CurGameHard = await CurGameHard.save();
+                    // make players socket join the game room
+                    const gameID = CurGameHard._id.toString();
+                    socket.join(gameID);
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameHard);
+                    refgame = CurGameHard;
+                    setTimeout(async () => {
+                        // get game
+                        let game = await Game.findById(gameID);
+                        // check if game is allowing users to join
+                        if (game.isOpen) {
+                            // close game so no one else can join
+                            game.isOpen = false;
+                            // save the game
+                            game = await game.save();
+                            // send updated game to all sockets within game
+                            io.to(gameID).emit('updateGame', game);
+                            // start game clock
+                            startGameClock(gameID);
+                            if (CurGameHard === refgame) {
+                                CurGameHard = null;
+                            }
+                        }
+                    },60000);
+
+
+
+
+                }
+                else {
+                    // make players socket join the game room
+                    const gameID = CurGameHard._id.toString();
+                    socket.join(gameID);
+                    // create our player
+                    let player = {
+                        socketID: socket.id,
+                        nickName
+
+                    }
+                    // add player to the game
+                    CurGameHard.players.push(player);
+                    // save the game
+                    CurGameHard = await CurGameHard.save();
+                    // send updated game to all sockets within game
+                    io.to(gameID).emit('updateGame', CurGameHard);
+
+                    // if games player count is 2 start the game
+                    if (CurGameHard.players.length === 2) {
+                        // close game so no one else can join
+                        CurGameHard.isOpen = false;
+                        // save the game
+                        CurGameHard = await CurGameHard.save();
+                        // send updated game to all sockets within game
+                        io.to(gameID).emit('updateGame', CurGameHard);
+                        // start game clock
+                        startGameClock(gameID);
+                        CurGameHard = null;
+                    }
+                }
+            }
+        }
+        catch (err) {
             console.log(err);
         }
     });
