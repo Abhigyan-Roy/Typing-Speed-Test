@@ -4,12 +4,12 @@ import socket from '../socketConfig';
 const getTypedWords = (words, player) => {
   let typedWords = words.slice(0, player.currentWordIndex);
   typedWords = typedWords.join(' ');
-  return <span className="p-2 rounded-md shadow-md bg-green-200">{typedWords} </span>;
+  return <span className="p-2 rounded-md shadow-md bg-green-200 dark:shadow-gray-300">{typedWords} </span>;
 };
 
 const getCurrentWord = (words, player, wrong) => {
   const currentWord = words[player.currentWordIndex];
-  const classNames = `p-2 rounded-md shadow-md`;
+  const classNames = `p-2 rounded-md shadow-md dark:text-white dark:shadow-gray-300`;
   const smallClass=`${wrong ? 'text-red-800' : ''}`;
   return (
     <span className={classNames}>
@@ -31,7 +31,7 @@ const getCurrentWord = (words, player, wrong) => {
 const getWordsToBeTyped = (words, player) => {
   let wordsToBeTyped = words.slice(player.currentWordIndex + 1, words.length);
   wordsToBeTyped = wordsToBeTyped.join(' ');
-  return <span className="p-2 rounded-md shadow-md">{wordsToBeTyped}</span>;
+  return <span className="p-2 rounded-md shadow-md dark:text-white dark:shadow-gray-300">{wordsToBeTyped}</span>;
 };
 
 const DisplayWords = ({ words, player }) => {

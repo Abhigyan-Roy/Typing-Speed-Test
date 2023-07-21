@@ -15,13 +15,13 @@ const JoinGame = (props) => {
   };
 
   return (
-    <div className="grid justify-center items-center gap-5 p-10 rounded-lg shadow-2xl">
-      <h1 className="text-blue-800 text-4xl my-5">Join Game</h1>
+    <div className="grid justify-center items-center gap-5 p-10 rounded-lg shadow-2xl dark:shadow-white">
+      <h1 className="text-blue-800 text-4xl my-5 dark:text-blue-200">Join Game</h1>
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label
             htmlFor="gameID"
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold mb-2 dark:text-white"
           >
             Enter Game ID
           </label>
@@ -35,7 +35,7 @@ const JoinGame = (props) => {
           />
           <label
             htmlFor="nickName"
-            className="block text-gray-700 text-sm font-bold mb-2"
+            className="block text-gray-700 text-sm font-bold mb-2 dark:text-white"
           >
             Enter Nick Name
           </label>

@@ -12,7 +12,7 @@ const ScoreBoard = ({ players }) => {
   if (scoreBoard.length === 0) return null;
   return (
     <div className="grid justify-center items-center gap-2 my-5">
-      <h1 className="text-xl font-bold">Leaderboard</h1>
+      <h1 className="text-xl font-bold dark:text-white">Leaderboard</h1>
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>

@@ -42,7 +42,7 @@ function App() {
   return (
     <>
       <Header></Header>
-      <div className="grid justify-center items-center p-28">
+      <div className="grid justify-center items-center p-28 dark:bg-black">
         <Routes>
           <Route path="/" element={<GameMenu />} />
           <Route path="/game/create" element={<CreateGame />} />
