@@ -11,21 +11,25 @@ const getCurrentWord = (words, player, wrong) => {
   const currentWord = words[player.currentWordIndex];
   const classNames = `p-2 rounded-md shadow-md dark:text-white dark:shadow-gray-300`;
   const smallClass=`${wrong ? 'text-red-800' : ''}`;
-  return (
-    <span className={classNames}>
-      {currentWord.split('').map((letter, index) => (
-        <span
-          key={index}
-          className={`${index === player.currentLetterIndex ? 'text-green-500' : ''} ${wrong ? 'text-red-500' : ''}`}
-          style={{
-            textDecoration: index === player.currentLetterIndex ? 'underline' : 'none',
-          }}
-        >
-          {letter}
-        </span>
-      ))}
-    </span>
-  );
+  if(player.currentWordIndex!=words.length)
+  {
+    return (
+      <span className={classNames}>
+        {currentWord.split('').map((letter, index) => (
+          <span
+            key={index}
+            className={`${index === player.currentLetterIndex ? 'text-green-500' : ''} ${wrong ? 'text-red-500' : ''}`}
+            style={{
+              textDecoration: index === player.currentLetterIndex ? 'underline' : 'none',
+            }}
+          >
+            {letter}
+          </span>
+        ))}
+      </span>
+    );
+  }
+  
 };
 
 const getWordsToBeTyped = (words, player) => {
@@ -36,7 +40,7 @@ const getWordsToBeTyped = (words, player) => {
 
 const DisplayWords = ({ words, player }) => {
   const [wrong, setWrong] = useState(false);
-
+  const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
   useEffect(() => {
     const handleWrongWord = () => {
       setWrong(true);
@@ -47,10 +51,29 @@ const DisplayWords = ({ words, player }) => {
 
     socket.on('wrongWord', handleWrongWord);
 
+    const handleSocketDisconnect = () => {
+      setIsSocketConnected(false);
+    };
+
+    const handleSocketConnect = () => {
+      setIsSocketConnected(true);
+    };
+
+    // Listen for socket connection and disconnection events
+    socket.on('disconnect', handleSocketDisconnect);
+    socket.on('connect', handleSocketConnect);
+
+    // Clean up the listeners on component unmount
     return () => {
       socket.off('wrongWord', handleWrongWord);
+      socket.off('disconnect', handleSocketDisconnect);
+      socket.off('connect', handleSocketConnect);
     };
   }, [socket]);
+
+  if (!isSocketConnected) {
+    return null;
+  }
 
   return (
     <div className="flex flex-row">
