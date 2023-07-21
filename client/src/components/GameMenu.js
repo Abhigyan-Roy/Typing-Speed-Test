@@ -1,28 +1,61 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 const GameMenu = () => {
     const navigate = useNavigate();
-
+    const [numberOfGames, setNumberOfGames] = useState(0);
+    const [averageWPM, setAverageWPM] = useState(0);
+    useEffect(() => {
+        fetchGames();
+        fetchAverageWPM();
+    }, []);
+    const fetchGames = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/game-played');
+            setNumberOfGames(response.data.count);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const fetchAverageWPM = async () => {
+        try {
+            const response = await axios.get('http://localhost:3001/average-typing-speed');
+            setAverageWPM(response.data.averageWPM.toFixed(2));
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
-        <div className="text-center">
-            <h1>Welcome to Type Racer Clone</h1>
-            <button
-                type="button"
-                onClick={() => navigate('/game/create')}
-                className="btn btn-primary btn-lg mr-3"
-                style={{ cursor: 'pointer' }}
-            >
-                Create Game
-            </button>
-            <button
-                type="button"
-                onClick={() => navigate('/game/join')}
-                className="btn btn-primary btn-lg"
-            >
-                Join Game
-            </button>
-        </div>
+       
+            <div className="grid rounded-lg shadow-2xl p-10 w-full flex-row">
+                <h1 className="text-blue-800 text-4xl">Test Your Typing Speed</h1>
+                <div className="flex m-10 justify-between">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/game/create")}
+                        className="bg-blue-900 hover:bg-blue-600 hover:cursor-pointer rounded-md text-white p-5 shadow-lg m-2"
+                    >
+                        Create Game
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/game/join")}
+                        className="bg-blue-900 hover:bg-blue-600 hover:cursor-pointer rounded-md text-white p-5 shadow-lg m-2"
+                    >
+                        Join Game
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/game/compete')}
+                        className="bg-blue-900 hover:bg-blue-600 hover:cursor-pointer rounded-md text-white p-5 shadow-lg m-2"
+                    >
+                        Compete
+                    </button>
+                </div>
+            </div>
+
+
     )
 }
 

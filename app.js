@@ -6,11 +6,59 @@ const expressServer = app.listen(3001);
 const io = socketio(expressServer);
 const Game = require('./Models/Game');
 const QuotableAPI = require('./EasyData');
-
+const router = express.Router();
+const cors = require('cors');
+app.use(cors());
+app.use('/', router);
 mongoose.connect('mongodb://localhost:27017/typeracerTutorial',
     { useNewUrlParser: true, useUnifiedTopology: true },
     () => { console.log('successfully connected to database') });
+router.get('/game-played', async (req, res) => {
+    try {
+        const count = await Game.countDocuments();
+        res.json({ count });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+const calculateAverageGlobalTypingSpeed = async () => {
+    try {
+        // Find all games in the database
+        const games = await Game.find();
 
+        let totalWPM = 0;
+        let totalPlayers = 0;
+
+        // Loop through all games
+        games.forEach((game) => {
+            // Loop through all players in each game
+            game.players.forEach((player) => {
+                // Check if the player has a valid WPM (not -1)
+                if (player.WPM !== -1) {
+                    totalWPM += player.WPM;
+                    totalPlayers++;
+                }
+            });
+        });
+
+        // Calculate the average WPM
+        const averageWPM = totalWPM / totalPlayers;
+
+        return averageWPM;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+};
+router.get('/average-typing-speed', async (req, res) => {
+    try {
+        const averageWPM = await calculateAverageGlobalTypingSpeed();
+        res.json({ averageWPM });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
@@ -50,7 +98,12 @@ io.on('connect', (socket) => {
                         io.to(gameID).emit('updateGame', game);
                     }
                 }
+                else {
+                    // If the word is wrong, emit a 'wrongWord' event to the specific user's socket
+                    socket.emit('wrongWord');
+                }
             }
+
         } catch (err) {
             console.log(err);
         }
@@ -89,6 +142,31 @@ io.on('connect', (socket) => {
         }
     });
 
+    socket.on('quitGame', async ({ gameID }) => {
+        try {
+            // Find the game
+            let game = await Game.findById(gameID);
+
+            // Check if the game has started and isn't over
+            if (!game.isOver) {
+                // Get the player who wants to quit the game
+                let player = game.players.find(player => player.socketID === socket.id);
+
+                player.WPM = 0;
+
+                game.isOver = true;
+                game.isOpen = false;
+                // save game
+                game = await game.save();
+                // stops timer for that player
+                socket.emit('done');
+                // send updated game to all sockets within game
+                io.to(gameID).emit('updateGame', game);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    });
     socket.on('join-game', async ({ gameID: _id, nickName }) => {
         try {
             // get game
@@ -110,6 +188,15 @@ io.on('connect', (socket) => {
                 // send updated game to all sockets within game
                 io.to(gameID).emit('updateGame', game);
             }
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    socket.on('join-competition', async ({ difficulty, nickName }) => {
+        try {
+            // get game
+
         } catch (err) {
             console.log(err);
         }
