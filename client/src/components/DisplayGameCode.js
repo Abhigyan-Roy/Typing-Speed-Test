@@ -11,7 +11,7 @@ const DisplayGameCode = ({ gameID }) => {
   };
 
   return (
-    <div className="grid justify-center items-center gap-5 rounded-lg shadow-lg my-5 p-5 dark:shadow-white">
+    <div className="grid justify-center items-center gap-5 rounded-lg shadow-lg my-4 p-5 dark:shadow-white">
       <h4 className="text-blue-800 text-lg dark:text-white">
         Share This Code With Your Friends To Let Them Join The Race.
       </h4>

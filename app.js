@@ -67,6 +67,10 @@ io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
         try {
+<<<<<<< HEAD
+=======
+            // console.log(userInput);
+>>>>>>> 443570e837ab947cdbbba39cb100f8eb74a83982
             // find the game
             let game = await Game.findById(gameID);
             // if game has started and game isn't over
