@@ -67,10 +67,7 @@ io.on('connect', (socket) => {
 
     socket.on('userInput', async ({ userInput, gameID }) => {
         try {
-<<<<<<< HEAD
-=======
             // console.log(userInput);
->>>>>>> 443570e837ab947cdbbba39cb100f8eb74a83982
             // find the game
             let game = await Game.findById(gameID);
             // if game has started and game isn't over
@@ -93,6 +90,11 @@ io.on('connect', (socket) => {
                         player.currentWordIndex++;
                     }
                     if (player.currentWordIndex !== game.words.length) {
+                        let endTime = new Date().getTime();
+                        // get timestamp of when the game started
+                        let { startTime } = game;
+                        // calculate Words Per Minute
+                        player.WPM = calculateWPM(endTime, startTime, player);
                         // save the game
                         game = await game.save();
                         // send updated game to all sockets within game

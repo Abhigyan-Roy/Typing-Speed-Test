@@ -20,7 +20,7 @@ const Compete = props => {
 
     return (
         <div className="grid justify-center items-center gap-5 p-10 rounded-lg shadow-2xl dark:shadow-white">
-          <h1 className="text-blue-800 text-4xl my-5">Compete In a Game</h1>
+          <h1 className="text-blue-800 text-4xl my-5">Compete With Others</h1>
           <form onSubmit={onSubmit}>
             <label
               htmlFor="nickName"

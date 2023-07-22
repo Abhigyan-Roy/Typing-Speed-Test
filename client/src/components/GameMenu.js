@@ -29,12 +29,11 @@ const GameMenu = () => {
     return (
         <>
             <div className="flex flex-col justify-center items-center dark:bg-black">
-            <h1 className="text-blue-500 text-md justify-center items-center dark:text-red-100">{numberOfGames} Contests Played on Our Platform</h1>
+                <h1 className="text-blue-500 text-md justify-center items-center dark:text-red-100">{numberOfGames} Contests Played on Our Platform</h1>
                 <h1 className="text-blue-500 text-md justify-center items-center dark:text-red-100 mb-4">{averageWPM} WPM is the Global Typing Speed, What's Yours?</h1>
-
             </div>
             <div className="rounded-lg shadow-2xl p-10 w-full flex flex-col h-full justify-center items-center dark:shadow-white dark:bg-black">
-                
+
                 <h1 className="text-blue-800 text-4xl justify-center items-center dark:text-red-100">Test Your Typing Speed</h1>
                 <div className="flex m-10 justify-between">
                     <button

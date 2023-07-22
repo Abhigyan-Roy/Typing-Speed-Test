@@ -32,9 +32,12 @@ const Header = () => {
         <header className="bg-blue-900 p-2 text-white dark:bg-gray-600">
             <nav className="flex flex-row items-center justify-between p-3">
                 <Link className=" active:text-white hover:text-white hover:no-underline" to="/"><h1 className="text-2xl font-bold">Typing App</h1></Link>
-                <button onClick={handleThemeSwitch}>
-                    <FontAwesomeIcon icon={themeIcon} />
-                </button>
+                <div className="flex flex-row items-center justify-between w-[10%]">
+                    <Link className=" active:text-white hover:text-white hover:no-underline" to="/guide"><h1 className="text-md">User Guide</h1></Link>
+                    <button onClick={handleThemeSwitch}>
+                        <FontAwesomeIcon icon={themeIcon} />
+                    </button>
+                </div>
             </nav>
         </header>
     );

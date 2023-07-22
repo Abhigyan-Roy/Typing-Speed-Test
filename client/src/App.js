@@ -15,6 +15,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Compete from "./components/Compete.js";
 import styles from "./index.css";
+import Guide from './Guide'
 const initial={
   _id: "",
   isOpen: false,
@@ -52,6 +53,7 @@ function App() {
       <div className="grid justify-center items-center p-20 dark:bg-black">
         <Routes>
           <Route path="/" element={<GameMenu />} />
+          <Route path="/guide" element={<Guide />} />
           <Route path="/game/create" element={<CreateGame />} />
           <Route path="/game/compete" element={<Compete />} />
           <Route path="/game/join" element={<JoinGame />} />

@@ -15,7 +15,7 @@ const JoinGame = (props) => {
   };
 
   return (
-    <div className="grid justify-center items-center gap-5 p-10 rounded-lg shadow-2xl dark:shadow-white">
+    <div className="grid justify-center items-center gap-5 p-5 rounded-lg shadow-2xl dark:shadow-white">
       <h1 className="text-blue-800 text-4xl my-5 dark:text-blue-200">Join Game</h1>
       <form onSubmit={onSubmit}>
         <div className="form-group">
