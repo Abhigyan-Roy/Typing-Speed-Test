@@ -138,6 +138,10 @@ io.on('connect', (socket) => {
         if (player.isPartyLeader) {
             // start time countdown
             let timerID = setInterval(async () => {
+                game.isOpen = false;
+                game = await game.save();
+                // Emit an "updateGame" event to inform all players that the game is closed for new joins
+                io.to(gameID).emit('updateGame', game);
                 // keep counting down until we hit 0
                 if (countDown >= 0) {
                     // emit countDown to all players within game
@@ -146,8 +150,6 @@ io.on('connect', (socket) => {
                 }
                 // start time clock over, now time to start game
                 else {
-                    // close game so no one else can join
-                    game.isOpen = false;
                     // save the game
                     game = await game.save();
                     // send updated game to all sockets within game
@@ -244,7 +246,7 @@ io.on('connect', (socket) => {
             console.log(err);
         }
     });
-    
+
     socket.on('join-open-game', async ({ nickName, difficulty }) => {
         try {
             console.log(nickName, CurGameEasy, CurGameMedium, CurGameHard);
