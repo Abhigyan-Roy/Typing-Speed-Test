@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import socket from "../socketConfig";
 
 const JoinGame = (props) => {
   const [userInput, setuserInput] = useState({ gameID: "", nickName: "" });
+  const [joinFailedMessage, setJoinFailedMessage] = useState("");
 
+  useEffect(() => {
+    socket.on("joinFailed", ({ message }) => {
+      setJoinFailedMessage(message);
+    });
+
+    return () => {
+      socket.off("joinFailed");
+    };
+  }, []);
   const onChange = (e) => {
     setuserInput({ ...userInput, [e.target.name]: e.target.value });
   };
@@ -17,6 +27,9 @@ const JoinGame = (props) => {
   return (
     <div className="grid justify-center items-center gap-5 p-5 rounded-lg shadow-2xl dark:shadow-white">
       <h1 className="text-blue-800 text-4xl my-5 dark:text-blue-200">Join Game</h1>
+      {joinFailedMessage && (
+        <p className="text-red-500 text-sm mb-4">{joinFailedMessage}</p>
+      )}
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label

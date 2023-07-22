@@ -199,6 +199,10 @@ io.on('connect', (socket) => {
                 // send updated game to all sockets within game
                 io.to(gameID).emit('updateGame', game);
             }
+            else {
+                // Send a "joinFailed" event to inform the user that they cannot join
+                socket.emit('joinFailed', { message: 'The game is already in progress and not accepting new players.' });
+            }
         } catch (err) {
             console.log(err);
         }
@@ -240,9 +244,10 @@ io.on('connect', (socket) => {
             console.log(err);
         }
     });
-    socket.on('join-open-game', async ({ nickName,difficulty }) => {
+    
+    socket.on('join-open-game', async ({ nickName, difficulty }) => {
         try {
-            console.log(nickName,CurGameEasy,CurGameMedium,CurGameHard);
+            console.log(nickName, CurGameEasy, CurGameMedium, CurGameHard);
             // get open game
             if (difficulty === "easy") {
                 if (CurGameEasy === null) {
@@ -285,7 +290,7 @@ io.on('connect', (socket) => {
                             CurGameEasy = null;
                         }
                     }, 60000);
-                    
+
 
 
 
@@ -369,10 +374,10 @@ io.on('connect', (socket) => {
                             }
                         }
                     }, 60000);
-                    
 
 
-                    
+
+
                 }
                 else {
                     // make players socket join the game room
@@ -446,7 +451,7 @@ io.on('connect', (socket) => {
                                 CurGameHard = null;
                             }
                         }
-                    },60000);
+                    }, 60000);
 
 
 
@@ -488,8 +493,8 @@ io.on('connect', (socket) => {
             console.log(err);
         }
     });
-});
 
+});
 const startGameClock = async (gameID) => {
     // get the game
     let game = await Game.findById(gameID);
